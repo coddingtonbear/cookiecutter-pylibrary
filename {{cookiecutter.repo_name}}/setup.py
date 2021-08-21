@@ -24,7 +24,7 @@ def read(*names, **kwargs):
 
 setup(
     name='{{ cookiecutter.distribution_name }}',
-    version='{{ cookiecutter.version }}',
+    version="{{ cookiecutter.version }}",
 {%- if cookiecutter.license != "no" %}
     license='{{ {
         "BSD 2-Clause License": "BSD-2-Clause",
