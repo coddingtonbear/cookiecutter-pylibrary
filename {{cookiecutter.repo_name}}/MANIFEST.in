@@ -3,9 +3,7 @@ graft src
 graft ci
 graft tests
 
-{% if cookiecutter.version_manager == 'bump2version' -%}
 include .bumpversion.cfg
-{% endif -%}
 include .cookiecutterrc
 include .coveragerc
 include .editorconfig
