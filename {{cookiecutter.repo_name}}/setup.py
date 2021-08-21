@@ -40,6 +40,7 @@ setup(
     }}',
 {%- endif %}
     description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
+    long_description_content_type='text/markdown',
     long_description='%s' % (
         re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.md'))
     ),
