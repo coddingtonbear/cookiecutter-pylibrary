@@ -26,29 +26,6 @@ def unlink_if_exists(path):
         os.unlink(path)
 
 if __name__ == "__main__":
-{%- if cookiecutter.c_extension_test_pypi == 'yes' %}
-{%- if cookiecutter.test_matrix_separate_coverage == 'no' %}
-    warn("TODO: c_extension_test_pypi=yes will not work with test_matrix_separate_coverage=no for now.")
-    sys.exit(1)
-{%- endif %}
-{%- if cookiecutter.c_extension_support == 'no' %}
-    warn("""
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!                                                                            !!
-!!      ERROR:                                                                !!
-!!                                                                            !!
-!!          c_extension_test_pypi=yes is designed to build and publish        !!
-!!          platform-specific wheels.                                         !!
-!!                                                                            !!
-!!          You have set c_extension_support=no, and that will make every     !!
-!!          test environment publish duplicated universal wheels.             !!
-!!                                                                            !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-""")
-    sys.exit(1)
-{%- endif %}
-{%- endif %}
-
 {% if cookiecutter.sphinx_docs == "no" %}
     shutil.rmtree('docs')
     os.unlink('.readthedocs.yml')
@@ -61,84 +38,24 @@ if __name__ == "__main__":
     os.unlink(join('src', '{{ cookiecutter.package_name }}', 'cli.py'))
 {% endif %}
 
-{%- if cookiecutter.test_matrix_configurator == 'no' %}
-    os.unlink(join('ci', 'templates', 'tox.ini'))
-{% endif %}
-{%- if cookiecutter.allow_tests_inside_package == 'no' %}
-    shutil.rmtree(join('src', '{{ cookiecutter.package_name }}', 'tests'))
-{% endif %}
-{%- if not (cookiecutter.c_extension_support == 'cffi' or cookiecutter.setup_py_uses_setuptools_scm == 'yes') %}
-    os.unlink('pyproject.toml')
-{% endif %}
-{%- if cookiecutter.c_extension_support == 'no' %}
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}.c'))
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}.pyx'))
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}_build.py'))
-{%- elif cookiecutter.c_extension_support == 'cffi' %}
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}.pyx'))
-{%- elif cookiecutter.c_extension_support == 'cython' %}
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}.c'))
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}_build.py'))
-    try:
-        subprocess.check_call(['tox', '-e', 'cythonize'])
-    except Exception:
-        subprocess.check_call([sys.executable, '-mtox', '-e', 'cythonize'])
-{%- else %}
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}.pyx'))
-    os.unlink(join('src', '{{ cookiecutter.package_name }}', '{{ cookiecutter.c_extension_module }}_build.py'))
-{%- endif %}
-
-    unlink_if_exists(join('ci', 'appveyor-with-compiler.cmd'))
-{%- if cookiecutter.appveyor == 'no' %}
-    os.unlink(join('ci', 'templates', '.appveyor.yml'))
-    unlink_if_exists('.appveyor.yml')
-{% endif %}
-    unlink_if_exists(join('ci', 'templates', 'appveyor.yml'))
-    unlink_if_exists('appveyor.yml')
-    unlink_if_exists(join('ci', 'appveyor-bootstrap.py'))
-
-{%- if cookiecutter.travis == 'no' %}
-    os.unlink(join('ci', 'templates', '.travis.yml'))
-    unlink_if_exists('.travis.yml')
-{% endif %}
-
 {%- if cookiecutter.repo_hosting == 'no' %}
     os.unlink('CONTRIBUTING.rst')
-{% endif %}
-
-{%- if cookiecutter.setup_py_uses_setuptools_scm == 'yes' %}
-    os.unlink('MANIFEST.in')
 {% endif %}
 
 {%- if cookiecutter.pre_commit == 'no' %}
     os.unlink('.pre-commit-config.yaml')
 {% endif %}
 
-{%- if cookiecutter.version_manager == 'bump2version' %}
-    os.unlink('tbump.toml')
-{%- elif cookiecutter.version_manager == 'tbump' %}
-    os.unlink('.bumpversion.cfg')
+{%- if cookiecutter.github_actions == 'no' %}
+    os.unlink('.github')
 {% endif %}
 
 {%- if cookiecutter.license == "no" %}
     os.unlink('LICENSE')
 {% endif %}
 
-    print("""
-################################################################################
-
-    Generating CI configuration ...
-""")
-    try:
-        subprocess.check_call(['tox', '-e', 'bootstrap', '--sitepackages'])
-    except Exception:
-        try:
-            subprocess.check_call([sys.executable, '-mtox', '-e', 'bootstrap', '--sitepackages'])
-        except Exception:
-            subprocess.check_call([sys.executable, join('ci', 'bootstrap.py')])
 
     print("""
-################################################################################
 ################################################################################
 
     You have succesfully created `{{ cookiecutter.repo_name }}`.
@@ -177,20 +94,6 @@ if __name__ == "__main__":
         ./ci/bootstrap.py
 
 """)
-
-{%- if cookiecutter.c_extension_test_pypi == 'yes' %}
-    note("""
-NOTE:
-
-    You are using the c_extension_test_pypi option.
-
-    Make sure you are setting TWINE_PASSWORD as a secret env variable in CI settings:
-    - https://ci.appveyor.com/project/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/settings/environment
-    - https://travis-ci.com{% if cookiecutter.repo_hosting == 'github.com' %}/github
-                           {%- elif cookiecutter.repo_hosting == 'gitlab.com' %}/gitlab
-                           {%- endif %}/{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}/settings
-""")
-{%- endif %}
 
     command_line_interface_bin_name = '{{ cookiecutter.command_line_interface_bin_name }}'
     while command_line_interface_bin_name.endswith('.py'):
