@@ -81,14 +81,6 @@ if __name__ == "__main__":
         git remote add origin git@{{ cookiecutter.repo_hosting_domain }}:{{ cookiecutter.repo_username }}/{{ cookiecutter.repo_name }}.git
         git push -u origin master v{{ cookiecutter.version }}
 
-{% if cookiecutter.test_matrix_configurator == "yes" %}
-    To regenerate your tox.ini, .travis.yml or .appveyor.yml run:
-{% else %}
-    To regenerate your .travis.yml or .appveyor.yml run:
-{% endif %}
-
-        tox -e bootstrap
-
     You can also run:
 
         ./ci/bootstrap.py
