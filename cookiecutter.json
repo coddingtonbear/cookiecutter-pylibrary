@@ -28,6 +28,8 @@
     ],
     "pre_commit": ["yes", "no"],
     "github_actions": ["yes", "no"],
+    "virtualenv": ["yes", "no"],
+    "install_dev_tools": ["yes", "no"],
     "command_line_interface": ["yes", "no"],
     "command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
     "sphinx_docs": ["yes", "no"],

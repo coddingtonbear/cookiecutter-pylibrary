@@ -54,6 +54,41 @@ if __name__ == "__main__":
     os.unlink('LICENSE')
 {% endif %}
 
+    subprocess.call(
+        args=[
+            "git",
+            "init",
+            "./",
+        ]
+    )
+
+{%- if cookiecutter.virtualenv == "yes" %}
+    subprocess.call(
+        args=[
+            "virtualenv",
+            "./env",
+        ]
+    )
+{% endif %}
+{%- if cookiecutter.install_dev_tools == "yes" %}
+    subprocess.call(
+        args=[
+            "env/bin/pip install black mypy flake8",
+        ]
+    )
+{%- if cookiecutter.pre_commit == 'no' %}
+    subprocess.call(
+        args=[
+            "env/bin/pip install pre-commit",
+        ]
+    )
+    subprocess.call(
+        args=[
+            "env/bin/pre-commit install",
+        ]
+    )
+{% endif %}
+{% endif %}
 
     print("""
 ################################################################################
