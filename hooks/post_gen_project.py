@@ -78,6 +78,8 @@ if __name__ == "__main__":
             "black",
             "mypy",
             "flake8",
+            "bump2version",
+            "twine",
         ]
     )
 {%- if cookiecutter.pre_commit == 'no' %}
