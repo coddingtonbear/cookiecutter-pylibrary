@@ -6,7 +6,7 @@
 * Free software: {{cookiecutter.license }}
 {% endif %}
 
-# Installation
+## Installation
 
 ```
 pip install {{ cookiecutter.distribution_name }}
